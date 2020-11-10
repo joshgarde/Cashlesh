@@ -7,6 +7,9 @@
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.34
 
+CREATE DATABASE cashless;
+USE cashless;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
