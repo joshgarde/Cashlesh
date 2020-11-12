@@ -3,12 +3,12 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 10, 2020 at 02:57 AM
+-- Generation Time: Nov 12, 2020 at 02:42 AM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.34
 
-CREATE DATABASE cashless;
-USE cashless;
+CREATE DATABASE IF NOT EXISTS cashless;
+use cashless;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -32,12 +32,36 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `account` (
   `accountID` int(11) NOT NULL,
-  `customerID` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `balance` int(11) NOT NULL,
   `interestRate` int(11) DEFAULT NULL,
   `minimumBalance` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `account`
+--
+
+INSERT INTO `account` (`accountID`, `name`, `balance`, `interestRate`, `minimumBalance`) VALUES
+(1, 'Money Laundering Co.', 1000000, 0, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `accountholders`
+--
+
+CREATE TABLE `accountholders` (
+  `customerID` int(11) NOT NULL,
+  `accountID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `accountholders`
+--
+
+INSERT INTO `accountholders` (`customerID`, `accountID`) VALUES
+(1, 1);
 
 -- --------------------------------------------------------
 
@@ -50,6 +74,13 @@ CREATE TABLE `customer` (
   `email` varchar(254) NOT NULL,
   `password` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `customer`
+--
+
+INSERT INTO `customer` (`customerId`, `email`, `password`) VALUES
+(1, 'joshgarde@gmail.com', 'password');
 
 -- --------------------------------------------------------
 
@@ -98,13 +129,13 @@ ALTER TABLE `transaction`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `accountID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `accountID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `customerId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `customerId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `transaction`
