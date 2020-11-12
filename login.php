@@ -1,21 +1,14 @@
 <?php
-  include 'db-config.php';
+  session_start();
+  include 'database/customer.php';
 
-  if (!$_POST['email'] or !$_POST['password']) {
-    return;
+  if (isset($_POST['email'])) {
+    $customer = Customer::getByEmail($_POST['email']);
+    $_SESSION['loggedin'] = true;
+    $_SESSION['customerID'] = $customer->customerID;
+
+    header("Location: /account.php");
   }
-
-  $statement = $mysqli->prepare('SELECT customerId FROM customer WHERE email=? AND password=?');
-  $statement->bind_param('ss', $_POST['email'], $_POST['password']);
-
-  $statement->execute();
-  $statement->bind_result($customerId);
-
-  $statement->fetch();
-
-  var_dump($customerId);
-
-  $statement->close();
 ?>
 <!doctype html>
 <html>
