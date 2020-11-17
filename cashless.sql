@@ -3,12 +3,12 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 12, 2020 at 02:42 AM
+-- Generation Time: Nov 17, 2020 at 03:30 AM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.34
 
 CREATE DATABASE IF NOT EXISTS cashless;
-use cashless;
+USE cashless;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -43,7 +43,8 @@ CREATE TABLE `account` (
 --
 
 INSERT INTO `account` (`accountID`, `name`, `balance`, `interestRate`, `minimumBalance`) VALUES
-(1, 'Money Laundering Co.', 1000000, 0, 1);
+(1, 'Money Laundering Co.', 89, 0, 1),
+(2, 'Cars4Kidz', 111, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -61,7 +62,8 @@ CREATE TABLE `accountholders` (
 --
 
 INSERT INTO `accountholders` (`customerID`, `accountID`) VALUES
-(1, 1);
+(1, 1),
+(1, 2);
 
 -- --------------------------------------------------------
 
@@ -91,13 +93,19 @@ INSERT INTO `customer` (`customerId`, `email`, `password`) VALUES
 CREATE TABLE `transaction` (
   `transactionID` int(11) NOT NULL,
   `amount` int(11) NOT NULL,
-  `startBalance` int(11) NOT NULL,
-  `endBalance` int(11) NOT NULL,
   `timestamp` datetime NOT NULL,
   `type` varchar(20) NOT NULL,
   `fromAccountID` int(11) DEFAULT NULL,
   `toAccountID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `transaction`
+--
+
+INSERT INTO `transaction` (`transactionID`, `amount`, `timestamp`, `type`, `fromAccountID`, `toAccountID`) VALUES
+(7, 1, '2020-11-17 03:28:19', 'deposit', 0, 1),
+(8, 10, '2020-11-17 03:29:55', 'deposit', 0, 1);
 
 --
 -- Indexes for dumped tables
@@ -129,7 +137,7 @@ ALTER TABLE `transaction`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `accountID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `accountID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `customer`
@@ -141,7 +149,7 @@ ALTER TABLE `customer`
 -- AUTO_INCREMENT for table `transaction`
 --
 ALTER TABLE `transaction`
-  MODIFY `transactionID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `transactionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
