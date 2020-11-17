@@ -26,5 +26,14 @@ class Account {
     $obj->minimumBalance = $minimumBalance;
     return $obj;
   }
+
+  public function updateBalance($amount) {
+    $this->balance = $amount;
+
+    global $mysqli;
+    $statement = $mysqli->prepare('UPDATE account SET balance = ? WHERE accountID = ?');
+    $statement->bind_param('ii', $this->balance, $this->accountID);
+    return $statement->execute();
+  }
 }
 ?>
