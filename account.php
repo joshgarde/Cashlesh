@@ -23,14 +23,13 @@
       <th>Interest Rate</th>
     </tr>
     <?php foreach ($accounts as &$account): ?>
-    <a>
-      <tr>
-        <td><?php echo $account->accountID; ?></td>
-        <td><?php echo $account->name; ?></td>
-        <td>$<?php echo number_format($account->balance, 2); ?></td>
-        <td><?php echo $account->interestRate; ?></td>
-      </tr>
-    </a>
+    <tr>
+        <td><a href="/history.php?id=<?php echo $account->accountID; ?>"><?php echo $account->accountID; ?></a></td>
+        <td><a href="/history.php?id=<?php echo $account->accountID; ?>"><?php echo $account->name; ?></a></td>
+        <td><a href="/history.php?id=<?php echo $account->accountID; ?>">$<?php echo number_format($account->balance, 2); ?></a></td>
+        <td><a href="/history.php?id=<?php echo $account->accountID; ?>"><?php echo $account->interestRate; ?></a></td>
+      </a>
+    </tr>
   <?php endforeach; ?>
   </table>
 </div>
