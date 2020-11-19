@@ -10,6 +10,8 @@
     if ($customer->password == $password) {
       $_SESSION['loggedin'] = true;
       $_SESSION['customerID'] = $customer->customerID;
+
+      header('Location /account.php');
     } else {
       $error = true;
       $errorMessage = 'Invalid login details';
