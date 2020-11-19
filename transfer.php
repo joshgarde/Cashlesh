@@ -1,9 +1,5 @@
 <?php
-session_start();
-include 'database/customer.php';
-include 'database/accountholder.php';
-include 'database/account.php';
-include 'database/transaction.php';
+include 'lib/all.php';
 
 $error = false;
 $success = false;
@@ -13,14 +9,15 @@ if ($_SESSION['loggedin'] == false) {
 } else {
   $accountHolders = AccountHolder::getByCustomerID($_SESSION['customerID']);
   $accounts = [];
+
   foreach ($accountHolders as &$accountHolder) {
-    array_push($accounts, Account::getAccountByID($accountHolder->accountID));
+    $accounts[$accountHolder->accountID] =  Account::getAccountByID($accountHolder->accountID);
   }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $from = $_POST['from'] - 1;
-  $to = $_POST['to'] - 1;
+  $from = $_POST['from'];
+  $to = $_POST['to'];
   $amount = $_POST['amount'];
 
   if ($from === $to) {
@@ -52,75 +49,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!doctype html>
-<html>
-<head>
-  <title>Cashlesh - Account Summary</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-</head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Cashless</a>
+<?php writeHeader() ?>
+<div class="container">
+  <h1>Transfer</h1>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="/account.php">Account Summary</a>
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="/transfer.php">Transfer</a>
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Transaction History</a>
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Logout</a>
-        </li>
-      </ul>
+  <?php if ($error): ?>
+    <div class="alert alert-danger" role="alert">
+      <?php echo $errorMessage; ?>
     </div>
-  </nav>
+  <?php endif; ?>
 
-  <div class="container">
-    <h1>Transfer</h1>
+  <?php if ($success): ?>
+    <div class="alert alert-success" role="alert">
+      <?php echo $successMessage; ?>
+    </div>
+  <?php endif; ?>
 
-    <?php if ($error): ?>
-      <div class="alert alert-danger" role="alert">
-        <?php echo $errorMessage; ?>
-      </div>
-    <?php endif; ?>
+  <form method="post">
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">From account:</label>
+      <select class="form-control" id="exampleFormControlSelect1" name="from">
+        <?php foreach ($accounts as &$account): ?>
+        <option value="<?php echo $account->accountID; ?>"><?php echo $account->name; ?>: $<?php echo number_format($account->balance, 2); ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
 
-    <?php if ($success): ?>
-      <div class="alert alert-success" role="alert">
-        <?php echo $successMessage; ?>
-      </div>
-    <?php endif; ?>
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">To account:</label>
+      <select class="form-control" id="exampleFormControlSelect1" name="to">
+        <?php foreach ($accounts as &$account): ?>
+        <option value="<?php echo $account->accountID; ?>"><?php echo $account->name; ?>: $<?php echo number_format($account->balance, 2); ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
 
-    <form method="post">
-      <div class="form-group">
-        <label for="exampleFormControlSelect1">From account:</label>
-        <select class="form-control" id="exampleFormControlSelect1" name="from">
-          <?php foreach ($accounts as &$account): ?>
-          <option value="<?php echo $account->accountID; ?>"><?php echo $account->name; ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Amount</label>
+      <input type="number" class="form-control" id="exampleFormControlInput1" name="amount">
+    </div>
 
-      <div class="form-group">
-        <label for="exampleFormControlSelect1">To account:</label>
-        <select class="form-control" id="exampleFormControlSelect1" name="to">
-          <?php foreach ($accounts as &$account): ?>
-          <option value="<?php echo $account->accountID; ?>"><?php echo $account->name; ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="exampleFormControlInput1">Amount</label>
-        <input type="number" class="form-control" id="exampleFormControlInput1" name="amount">
-      </div>
-
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-  </div>
-</body>
-</html>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+<?php writeFooter(); ?>

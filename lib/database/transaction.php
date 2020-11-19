@@ -1,6 +1,4 @@
 <?php
-include 'db-config.php';
-
 class Transaction {
   public $transactionID;
   public $amount;

@@ -1,6 +1,4 @@
 <?php
-include 'db-config.php';
-
 class Account {
   public $accountID;
   public $customerID;

@@ -1,13 +1,19 @@
 <?php
-  session_start();
-  include 'database/customer.php';
+  include 'lib/all.php';
+
+  $error = false;
 
   if (isset($_POST['email'])) {
     $customer = Customer::getByEmail($_POST['email']);
-    $_SESSION['loggedin'] = true;
-    $_SESSION['customerID'] = $customer->customerID;
+    $password = $_POST['password'];
 
-    header("Location: /account.php");
+    if ($customer->password == $password) {
+      $_SESSION['loggedin'] = true;
+      $_SESSION['customerID'] = $customer->customerID;
+    } else {
+      $error = true;
+      $errorMessage = 'Invalid login details';
+    }
   }
 ?>
 <!doctype html>
@@ -22,6 +28,12 @@
   </nav>
   <div class="container">
     <h1>Login Page</h1>
+
+    <?php if ($error): ?>
+      <div class="alert alert-danger" role="alert">
+        <?php echo $errorMessage; ?>
+      </div>
+    <?php endif; ?>
 
     <form method="post" action="/login.php">
       <div class="form-group">
