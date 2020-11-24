@@ -17,7 +17,7 @@
       'subquote' => 'majority investor in Quibi'
     ],
     [
-      'quote' => 'Perspection is reality.',
+      'quote' => 'Perception is reality.',
       'subquote' => 'man who lacks both'
     ]
   ];
