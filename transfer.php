@@ -4,9 +4,7 @@ include 'lib/all.php';
 $error = false;
 $success = false;
 
-if ($_SESSION['loggedin'] == false) {
-  header("Location: /login.php");
-} else {
+if (requiresAuth()) {
   $accountHolders = AccountHolder::getByCustomerID($_SESSION['customerID']);
   $accounts = [];
 
@@ -20,7 +18,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $to = $_POST['to'];
   $amount = $_POST['amount'];
 
-  if ($from === $to) {
+  # Convert inputted decimal value to integer
+  $amount = intval(floatval($amount) * 100);
+
+  if ($amount <= 0) {
+    $error = true;
+    $errorMessage = 'Please enter a positive non-zero amount';
+  } elseif ($from === $to) {
     $error = true;
     $errorMessage = 'That\'s the same account!';
   } elseif ($accounts[$from]->balance < $amount) {
@@ -36,15 +40,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $datetime = date("Y-m-d H:i:s", mktime());
     $transaction->timestamp = $datetime;
 
-    $transaction->insertIntoDB();
-
     $newFromBalance = $accounts[$from]->balance - $amount;
     $newToBalance = $accounts[$to]->balance + $amount;
+
+    global $mysqli;
+    $mysqli->begin_transaction();
+    $transaction->insertIntoDB();
     $accounts[$from]->updateBalance($newFromBalance);
     $accounts[$to]->updateBalance($newToBalance);
+    $result = $mysqli->commit();
 
-    $success = true;
-    $successMessage = 'Successfully transfered!';
+    if ($result === true) {
+      $success = true;
+      $successMessage = 'Successfully transfered!';
+    } else {
+      $error = false;
+      $errorMessage = 'An unknown error has occured. Contact support.';
+    }
   }
 }
 ?>
@@ -67,26 +79,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <form method="post">
     <div class="form-group">
-      <label for="exampleFormControlSelect1">From account:</label>
-      <select class="form-control" id="exampleFormControlSelect1" name="from">
+      <label for="from-account">From account:</label>
+      <select class="form-control" id="from-account" name="from">
         <?php foreach ($accounts as &$account): ?>
-        <option value="<?php echo $account->accountID; ?>"><?php echo $account->name; ?>: $<?php echo number_format($account->balance, 2); ?></option>
+        <option value="<?php echo $account->accountID; ?>">
+          <?php echo $account->name; ?>: $<?php echo $account->getFormattedBalance(); ?>
+        </option>
         <?php endforeach; ?>
       </select>
     </div>
 
     <div class="form-group">
-      <label for="exampleFormControlSelect1">To account:</label>
-      <select class="form-control" id="exampleFormControlSelect1" name="to">
+      <label for="to-account">To account:</label>
+      <select class="form-control" id="to-account" name="to">
         <?php foreach ($accounts as &$account): ?>
-        <option value="<?php echo $account->accountID; ?>"><?php echo $account->name; ?>: $<?php echo number_format($account->balance, 2); ?></option>
+        <option value="<?php echo $account->accountID; ?>">
+          <?php echo $account->name; ?>: $<?php echo $account->getFormattedBalance(); ?>
+        </option>
         <?php endforeach; ?>
       </select>
     </div>
 
     <div class="form-group">
-      <label for="exampleFormControlInput1">Amount</label>
-      <input type="number" class="form-control" id="exampleFormControlInput1" name="amount">
+      <label for="amount">Amount</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">$</div>
+        </div>
+        <input class="form-control" id="amount" name="amount" value="0.00">
+      </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>

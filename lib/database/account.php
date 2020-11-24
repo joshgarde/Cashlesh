@@ -1,11 +1,14 @@
 <?php
-class Account {
+require_once './lib/database/checkingAccount.php';
+require_once './lib/database/savingsAccount.php';
+
+abstract class Account {
   public $accountID;
   public $customerID;
   public $name;
   public $balance;
-  public $interestRate;
-  public $minimumBalance;
+
+  abstract public function accountType();
 
   public static function getAccountByID($id) {
     global $mysqli;
@@ -16,12 +19,19 @@ class Account {
 
     $statement->fetch();
 
-    $obj = new Account();
+    $obj = null;
+    if ($interestRate !== null) {
+      $obj = new SavingsAccount();
+      $obj->interestRate = $interestRate;
+    } elseif ($minimumBalance !== null) {
+      $obj = new CheckingAccount();
+      $obj->interestRate = $minimumBalance;
+    }
+
     $obj->accountID = $accountID;
     $obj->name = $name;
     $obj->balance = $balance;
-    $obj->interestRate = $interestRate;
-    $obj->minimumBalance = $minimumBalance;
+
     return $obj;
   }
 
@@ -32,6 +42,10 @@ class Account {
     $statement = $mysqli->prepare('UPDATE account SET balance = ? WHERE accountID = ?');
     $statement->bind_param('ii', $this->balance, $this->accountID);
     return $statement->execute();
+  }
+
+  public function getFormattedBalance() {
+    return number_format($this->balance / 100, 2);
   }
 }
 ?>

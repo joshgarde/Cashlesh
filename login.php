@@ -1,20 +1,27 @@
 <?php
-  include 'lib/all.php';
+  require_once 'lib/all.php';
 
   $error = false;
 
-  if (isset($_POST['email'])) {
-    $customer = Customer::getByEmail($_POST['email']);
-    $password = $_POST['password'];
+  if (requiresAuth(false)) {
+    header('Location: /account.php');
+    return;
+  }
 
-    if ($customer->password == $password) {
-      $_SESSION['loggedin'] = true;
-      $_SESSION['customerID'] = $customer->customerID;
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!empty($_POST['email']) && !empty($_POST['password'])) {
+      $customer = Customer::getByEmail($_POST['email']);
+      $password = $_POST['password'];
 
-      header('Location /account.php');
-    } else {
-      $error = true;
-      $errorMessage = 'Invalid login details';
+      if ($customer->password === $password) {
+        $_SESSION['loggedin'] = true;
+        $_SESSION['customerID'] = $customer->customerID;
+
+        header('Location: /account.php');
+      } else {
+        $error = true;
+        $errorMessage = 'Invalid login details';
+      }
     }
   }
 ?>
