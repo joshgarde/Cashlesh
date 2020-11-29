@@ -21,5 +21,27 @@ class Transaction {
 
     return $statement->insert_id;
   }
+
+  public function getTransaction($accountID){
+    global $mysqli;
+    $statement = $mysqli->prepare('SELECT amount, timestamp, type, fromAccountID, toAccountID FROM Transaction WHERE fromAccountID=? AND toAccountID =?');
+    $statement->bind_param('ii', $accountID , $accountID);
+    $statement->execute();
+    $statement->bind_result($amount, $timestamp, $type, $fromAccountID, $toAccountID);
+
+    $array = [];
+
+    while ($statement->fetch()) {
+      $obj = new Transaction();
+      $obj->amount = $amount;
+      $obj->timestamp = $timestamp;
+      $obj->type = $type;
+      $obj->fromAccountID = $fromAccountID;
+      $obj->toAccountID = $toAccountID;
+      array_push($array, $obj);
+    }
+
+    return $array;
+  }
 }
 ?>
