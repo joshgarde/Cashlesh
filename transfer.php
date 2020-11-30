@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $transaction->fromAccountID = $from;
     $transaction->toAccountID = $to;
     $transaction->amount = $amount;
-    $transaction->type = 'deposit';
+    $transaction->type = 'Transfer';
 
     $datetime = date("Y-m-d H:i:s", mktime());
     $transaction->timestamp = $datetime;
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<?php writeHeader() ?>
+<?php writeHeader('Transfer'); ?>
 <div class="container-fluid">
   <div class="row mt-4">
     <div class="col px-5">

@@ -3,15 +3,17 @@
 
   if (requiresAuth()) {
     $accountID = $_GET['id'];
+    $account = Account::getAccountByID($accountID);
     $transactions = Transaction::getTransaction($accountID);
   }
  ?>
 
- <?php writeHeader(); ?>
+ <?php writeHeader('Transaction History'); ?>
  <div class="container-fluid">
    <div class="row mt-4">
      <div class="col px-5">
-       <h1>Welcome to Cashless Bank!</h1>
+       <h1>Transaction History</h1>
+       <h5><?php echo $account->name; ?></h5>
      </div>
    </div>
 
@@ -19,8 +21,8 @@
      <div class="col-8 px-5">
        <table class="table">
          <tr>
-           <th>From ID</th>
-           <th>To ID</th>
+           <th>From Account</th>
+           <th>To Account</th>
            <th>Amount</th>
            <th>Account Type</th>
            <th>Timestamp</th>
@@ -30,7 +32,7 @@
          <tr>
              <td><?php echo $transaction->fromAccountID; ?></td>
              <td><?php echo $transaction->toAccountID; ?></td>
-             <td><?php echo $transaction->amount; ?></td>
+             <td>$<?php echo $transaction->getFormattedAmount(); ?></td>
              <td><?php echo $transaction->type; ?></td>
              <td><?php echo $transaction->timestamp; ?></td>
            </a>

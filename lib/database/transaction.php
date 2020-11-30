@@ -24,7 +24,7 @@ class Transaction {
 
   public function getTransaction($accountID){
     global $mysqli;
-    $statement = $mysqli->prepare('SELECT amount, timestamp, type, fromAccountID, toAccountID FROM Transaction WHERE fromAccountID=? AND toAccountID =?');
+    $statement = $mysqli->prepare('SELECT amount, timestamp, type, fromAccountID, toAccountID FROM Transaction WHERE fromAccountID=? OR toAccountID=?');
     $statement->bind_param('ii', $accountID , $accountID);
     $statement->execute();
     $statement->bind_result($amount, $timestamp, $type, $fromAccountID, $toAccountID);
@@ -42,6 +42,10 @@ class Transaction {
     }
 
     return $array;
+  }
+
+  public function getFormattedAmount() {
+    return number_format($this->amount / 100, 2);
   }
 }
 ?>

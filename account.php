@@ -10,7 +10,7 @@
   }
 ?>
 
-<?php writeHeader(); ?>
+<?php writeHeader('Account Summary'); ?>
 <div class="container-fluid">
   <div class="row mt-4">
     <div class="col px-5">
