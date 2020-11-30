@@ -27,6 +27,11 @@
 <?php } ?>
 
 <?php function writeFooter() { ?>
+  <nav class="navbar fixed-bottom navbar-light bg-light">
+    <span class="navbar-text">
+      Cashless Bank, Not, Not Member FDIC.
+    </span>
+  </nav>
 </body>
 </html>
 <?php } ?>
