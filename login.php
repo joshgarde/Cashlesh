@@ -36,7 +36,7 @@
     <a class="navbar-brand" href="#">Cashless</a>
   </nav>
   <div class="container">
-    <h1>Login Page</h1>
+    <h1>Login</h1>
 
     <?php if ($error): ?>
       <div class="alert alert-danger" role="alert">

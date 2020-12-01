@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 17, 2020 at 03:30 AM
+-- Generation Time: Dec 01, 2020 at 05:32 AM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.34
 
@@ -43,8 +43,9 @@ CREATE TABLE `account` (
 --
 
 INSERT INTO `account` (`accountID`, `name`, `balance`, `interestRate`, `minimumBalance`) VALUES
-(1, 'Money Laundering Co.', 89, 0, 1),
-(2, 'Cars4Kidz', 111, NULL, 1);
+(12345, 'Money Laundering Co.', 99099000, 0, NULL),
+(77701, 'Quibi Holdings, LLC', 900100, NULL, 100),
+(98765, 'SpaceCoin ICO', 21000, NULL, 100);
 
 -- --------------------------------------------------------
 
@@ -62,8 +63,10 @@ CREATE TABLE `accountholders` (
 --
 
 INSERT INTO `accountholders` (`customerID`, `accountID`) VALUES
-(1, 1),
-(1, 2);
+(1, 12345),
+(1, 98765),
+(2, 77701),
+(2, 12345);
 
 -- --------------------------------------------------------
 
@@ -82,7 +85,8 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`customerId`, `email`, `password`) VALUES
-(1, 'joshgarde@gmail.com', 'password');
+(1, 'joshgarde@gmail.com', 'password'),
+(2, 'tomdickerson@cashless.io', 'password');
 
 -- --------------------------------------------------------
 
@@ -96,7 +100,7 @@ CREATE TABLE `transaction` (
   `timestamp` datetime NOT NULL,
   `type` varchar(20) NOT NULL,
   `fromAccountID` int(11) DEFAULT NULL,
-  `toAccountID` int(11) NOT NULL
+  `toAccountID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -104,8 +108,12 @@ CREATE TABLE `transaction` (
 --
 
 INSERT INTO `transaction` (`transactionID`, `amount`, `timestamp`, `type`, `fromAccountID`, `toAccountID`) VALUES
-(7, 1, '2020-11-17 03:28:19', 'deposit', 0, 1),
-(8, 10, '2020-11-17 03:29:55', 'deposit', 0, 1);
+(18, 100000000, '2020-11-02 09:25:30', 'Cash Deposit', NULL, 12345),
+(19, 1000000000, '2020-03-04 13:21:18', 'Cash Deposit', NULL, 77701),
+(20, 999999900, '2020-10-20 09:22:24', 'Cash Withdrawal', 77701, NULL),
+(21, 20000, '2020-07-06 16:40:16', 'Cash Deposit', NULL, 98765),
+(24, 1000, '2020-12-01 01:45:37', 'Transfer', 12345, 98765),
+(25, 900000, '2020-12-01 01:46:29', 'Transfer', 12345, 77701);
 
 --
 -- Indexes for dumped tables
@@ -137,19 +145,19 @@ ALTER TABLE `transaction`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `accountID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `accountID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98767;
 
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `customerId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `customerId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `transaction`
 --
 ALTER TABLE `transaction`
-  MODIFY `transactionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `transactionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
